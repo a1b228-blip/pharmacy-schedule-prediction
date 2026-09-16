@@ -790,8 +790,8 @@ function initGate() {
       unlockGate();
     } else {
       if (errorEl) {
-        errorEl.textContent = '通關密碼錯誤，請重新輸入';
-        errorEl.classList.add('show');
+        errorEl.textContent = '';
+        errorEl.classList.remove('show');
       }
       if (inputWrap) {
         inputWrap.classList.remove('shake');
