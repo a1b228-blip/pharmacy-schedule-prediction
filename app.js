@@ -790,7 +790,7 @@ function initGate() {
       unlockGate();
     } else {
       if (errorEl) {
-        errorEl.textContent = '通關密碼錯誤，請重新輸入（提示：cch5500）';
+        errorEl.textContent = '通關密碼錯誤，請重新輸入';
         errorEl.classList.add('show');
       }
       if (inputWrap) {
