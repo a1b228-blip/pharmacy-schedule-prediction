@@ -39,6 +39,6 @@
 - 【剛性防呆約束】小夜輪值池排除淑鈴（13 人輪替）；嚴禁任何人連續排 6 天小夜；遇預假期間絕對不得排班。
 
 ## 🕐 最後更新
-- 時間：2026-09-17 00:37
+- 時間：2026-09-17 01:05
 - 更新者：Google Antigravity @ jiangruiyideMacBook-Air
 - Git push：✅ 已推至 a1b228-blip/pharmacy-schedule-prediction (main 分支)
