@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>藥劑科小夜輪值順序預測系統｜佳里奇美醫院</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-header__inner">
+    <div class="app-header__title-group">
+      <h1 class="app-header__title">藥劑科小夜輪值順序預測系統</h1>
+      <p class="app-header__subtitle">佳里奇美醫院｜小夜班（E / L3 / L2）動態交棒排班預測</p>
+    </div>
+    <div class="app-header__badge" title="淑鈴夜班資格為「否」，100% 不進入小夜輪值池，僅排日班">
+      ⚠️ 淑鈴不參與小夜輪值（僅排日班）
+    </div>
+  </div>
+</header>
+
+<div class="validation-bar" id="validationBar"></div>
+
+<div class="toolbar">
+  <div class="toolbar__group">
+    <span class="toolbar__label">月份</span>
+    <div class="tab-group" id="monthTabs"></div>
+  </div>
+  <div class="toolbar__group">
+    <span class="toolbar__label">班別</span>
+    <div class="tab-group" id="shiftTabs"></div>
+  </div>
+  <div class="toolbar__group toolbar__group--right">
+    <button class="btn btn--reset" id="resetBtn">↺ 重置為預設資料</button>
+  </div>
+</div>
+
+<main class="app-layout">
+
+  <aside class="sidebar">
+
+    <section class="panel leave-panel">
+      <h2 class="panel__title">📝 員工預假登記</h2>
+      <form class="leave-form" id="leaveForm">
+        <div class="form-field">
+          <label for="leaveNameSelect">同仁姓名</label>
+          <select id="leaveNameSelect" required></select>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="leaveStartInput">預假開始日期</label>
+            <input type="date" id="leaveStartInput" required>
+          </div>
+          <div class="form-field">
+            <label for="leaveEndInput">預假結束日期</label>
+            <input type="date" id="leaveEndInput" required>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="leaveNoteInput">事由備註</label>
+          <input type="text" id="leaveNoteInput" placeholder="例如：特休、家庭因素…（選填）">
+        </div>
+        <button type="submit" class="btn btn--primary">＋ 新增預假</button>
+      </form>
+
+      <div class="leave-list__wrapper">
+        <h3 class="panel__subtitle">已登記預假清單</h3>
+        <div class="leave-list" id="leaveList"></div>
+      </div>
+    </section>
+
+    <details class="panel advanced-settings">
+      <summary class="panel__title panel__title--collapsible">⚙️ 進階設定：各班別起跑順位</summary>
+      <p class="advanced-settings__hint">
+        排班引擎已內建「同日同人絕對互斥」與「防過勞」防呆，三軌起跑順位不論如何設定都不會派同一人上兩班。
+        預設依規格書：10/01 當天 E 由馨霈、L3 由博茹、L2 由曼如領跑；如實際現況三軌起跑人員不同，可於此調整。
+      </p>
+      <div class="offset-row">
+        <label>E 班起跑順位</label>
+        <select id="offsetSelect-E"></select>
+      </div>
+      <div class="offset-row">
+        <label>L3 班起跑順位</label>
+        <select id="offsetSelect-L3"></select>
+      </div>
+      <div class="offset-row">
+        <label>L2 班起跑順位</label>
+        <select id="offsetSelect-L2"></select>
+      </div>
+    </details>
+
+    <section class="panel stats-panel">
+      <h2 class="panel__title">📊 本月輪值次數統計</h2>
+      <div class="stats-grid" id="statsGrid"></div>
+    </section>
+
+  </aside>
+
+  <div class="main-content">
+
+    <section class="panel calendar-section">
+      <h2 class="panel__title">🗓️ 排班預測月曆</h2>
+      <div class="calendar-weekdays">
+        <div class="calendar-weekday">日</div>
+        <div class="calendar-weekday">一</div>
+        <div class="calendar-weekday">二</div>
+        <div class="calendar-weekday">三</div>
+        <div class="calendar-weekday">四</div>
+        <div class="calendar-weekday">五</div>
+        <div class="calendar-weekday">六</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-legend">
+        <span class="legend-item"><span class="shift-badge shift-badge--E"><span class="shift-code">E</span></span> E 班</span>
+        <span class="legend-item"><span class="shift-badge shift-badge--L3"><span class="shift-code">L3</span></span> L3 班</span>
+        <span class="legend-item"><span class="shift-badge shift-badge--L2"><span class="shift-code">L2</span></span> L2 班</span>
+        <span class="legend-item"><span class="handoff-tag">🔁 交棒</span> 遇假中途交棒</span>
+        <span class="legend-item"><span class="leave-tag">🏖️ 預假</span> 員工預假中</span>
+      </div>
+    </section>
+
+    <section class="panel timeline-section">
+      <h2 class="panel__title">🔗 輪值序列推演表</h2>
+      <div class="timeline-tracks" id="timelineTracks"></div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="app-footer">
+  <p>本系統為 100% 離線單頁應用，所有運算於本機瀏覽器執行，不上傳任何資料。直接以瀏覽器開啟 index.html 即可使用。</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
