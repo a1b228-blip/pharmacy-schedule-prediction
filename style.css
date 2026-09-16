@@ -147,6 +147,61 @@ h1, h2, h3 { margin: 0; }
 .btn:hover { filter: brightness(0.97); }
 .btn--primary { background: var(--navy-600); border-color: var(--navy-600); color: #fff; width: 100%; font-weight: 600; padding: 10px; }
 .btn--reset { color: var(--color-danger); border-color: #f3c9c9; background: #fff5f5; }
+.btn--ghost { color: var(--navy-700); background: #f4f6fb; border-color: var(--border-soft); font-size: 12.5px; padding: 7px 12px; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---------------------------------------------------------------------- 月份導覽列 */
+
+.month-nav-group { flex-wrap: wrap; }
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.month-nav__btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-card);
+  color: var(--navy-700);
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.month-nav__btn:hover:not(:disabled) { background: var(--navy-700); color: #fff; border-color: var(--navy-700); }
+
+.month-nav__center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+}
+
+.month-nav__input {
+  border: none;
+  font-size: 13px;
+  color: var(--text-main);
+  background: transparent;
+  width: 130px;
+}
+.month-nav__input:focus { outline: none; }
+
+.month-nav__display {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy-900);
+  white-space: nowrap;
+}
 
 /* ---------------------------------------------------------------------- 版面 */
 

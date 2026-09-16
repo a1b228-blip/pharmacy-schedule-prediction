@@ -1,7 +1,7 @@
 'use strict';
 
 /* ============================================================================
- * 佳里奇美醫院藥劑科小夜輪值順序預測系統（修正版：三軌並行與同日互斥）
+ * 佳里奇美醫院藥劑科小夜輪值順序預測系統（第三階段：任意未來月份＋動態全期重算）
  * app.js — 三軌平行交棒排班引擎、同日互斥防呆、預假即時重算與 DOM 渲染
  *
  * 本檔為純前端原生 JavaScript，無任何外部套件依賴，直接以瀏覽器開啟
@@ -28,16 +28,16 @@ const NIGHT_SHIFT_EXCLUDED = ['淑鈴'];
 const SHIFT_TYPES = ['E', 'L3', 'L2'];
 const SHIFT_LABELS = { E: 'E 班', L3: 'L3 班', L2: 'L2 班' };
 
-// 排班預測模擬範圍：涵蓋 10 / 11 / 12 月，確保跨月的 5 天週期可連續推演
+// 排班預測模擬範圍：起點固定 2026-10-01（規格書之演算基準日，
+// E:馨霈、L3:博茹、L2:曼如自此啟動），結束日延伸至可選擇的最遠未來月份。
+// 主管不論切換到這段期間內哪個月份，看到的都是「同一條」自 2026-10-01
+// 起連續推演的模擬結果，絕不因換月或換頁而重新起算或中斷棒次。
 const SIM_START_DATE = '2026-10-01';
-const SIM_END_DATE = '2026-12-31';
+const SIM_END_DATE = '2028-12-31';
 
-// 可切換檢視之月份
-const VIEW_MONTHS = [
-  { key: '2026-10', label: '115年10月' },
-  { key: '2026-11', label: '115年11月' },
-  { key: '2026-12', label: '115年12月' }
-];
+// 月份導覽可選範圍（對應模擬範圍之起訖月份）
+const MIN_MONTH_KEY = SIM_START_DATE.slice(0, 7); // '2026-10'
+const MAX_MONTH_KEY = SIM_END_DATE.slice(0, 7);   // '2028-12'
 
 const WEEKDAY_LABELS = ['日', '一', '二', '三', '四', '五', '六'];
 
@@ -102,6 +102,32 @@ function addDays(d, n) {
 // 判斷某人於某日是否處於預假狀態
 function isOnLeave(name, dateStr) {
   return leaveRecords.some(r => r.name === name && dateStr >= r.start && dateStr <= r.end);
+}
+
+// 'YYYY-MM' 月份鍵值 -> 「115年10月 (2026-10)」顯示字串（西元轉民國：西元年 - 1911）
+function monthLabel(monthKey) {
+  const [y, m] = monthKey.split('-').map(Number);
+  return `${y - 1911}年${m}月 (${monthKey})`;
+}
+
+// 將月份鍵值限制在可選擇範圍內（模擬起訖月份之間）
+function clampMonthKey(key) {
+  if (key < MIN_MONTH_KEY) return MIN_MONTH_KEY;
+  if (key > MAX_MONTH_KEY) return MAX_MONTH_KEY;
+  return key;
+}
+
+// 月份鍵值前後移動 delta 個月（可為負數）
+function shiftMonthKey(key, delta) {
+  const [y, m] = key.split('-').map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}`;
+}
+
+// 取得系統當下日期所屬月份鍵值（供「回到今天」按鈕使用）
+function todayMonthKey() {
+  const t = new Date();
+  return `${t.getFullYear()}-${pad2(t.getMonth() + 1)}`;
 }
 
 /* ----------------------------------------------------------------------------
@@ -421,10 +447,20 @@ function renderValidationBar() {
  * --------------------------------------------------------------------------*/
 
 function renderToolbar() {
-  const monthTabs = document.getElementById('monthTabs');
-  monthTabs.innerHTML = VIEW_MONTHS.map(m => `
-    <button class="tab ${state.currentMonth === m.key ? 'active' : ''}" data-month="${m.key}">${m.label}</button>
-  `).join('');
+  // 月份導覽列：上一月／下一月按鈕、<input type="month"> 選擇器、民國年顯示標籤
+  const monthPicker = document.getElementById('monthPicker');
+  if (monthPicker) {
+    monthPicker.min = MIN_MONTH_KEY;
+    monthPicker.max = MAX_MONTH_KEY;
+    monthPicker.value = state.currentMonth;
+  }
+  const monthDisplay = document.getElementById('monthDisplayLabel');
+  if (monthDisplay) monthDisplay.textContent = monthLabel(state.currentMonth);
+
+  const prevBtn = document.getElementById('prevMonthBtn');
+  const nextBtn = document.getElementById('nextMonthBtn');
+  if (prevBtn) prevBtn.disabled = state.currentMonth <= MIN_MONTH_KEY;
+  if (nextBtn) nextBtn.disabled = state.currentMonth >= MAX_MONTH_KEY;
 
   const shiftTabs = document.getElementById('shiftTabs');
   const shiftOptions = [{ key: 'ALL', label: '全部' }].concat(SHIFT_TYPES.map(s => ({ key: s, label: SHIFT_LABELS[s] })));
@@ -448,6 +484,12 @@ function renderToolbar() {
 function renderLeavePanel() {
   const nameSelect = document.getElementById('leaveNameSelect');
   nameSelect.innerHTML = ROTATION_POOL.map(n => `<option value="${n}">${n}</option>`).join('');
+
+  // 預假日期限制在模擬範圍內，避免登記到系統尚未推演到的日期而悄悄無效
+  const startInput = document.getElementById('leaveStartInput');
+  const endInput = document.getElementById('leaveEndInput');
+  if (startInput) { startInput.min = SIM_START_DATE; startInput.max = SIM_END_DATE; }
+  if (endInput) { endInput.min = SIM_START_DATE; endInput.max = SIM_END_DATE; }
 
   const list = document.getElementById('leaveList');
   if (leaveRecords.length === 0) {
@@ -668,14 +710,33 @@ function renderAll() {
   renderTimeline();
 }
 
+// 切換至指定月份（自動限制在模擬可選範圍內），並只重繪與月份相關的區塊
+function goToMonth(newMonthKey) {
+  state.currentMonth = clampMonthKey(newMonthKey);
+  renderToolbar();
+  renderCalendar();
+  renderStats();
+}
+
 function attachEventListeners() {
-  document.getElementById('monthTabs').addEventListener('click', e => {
-    const btn = e.target.closest('[data-month]');
-    if (!btn) return;
-    state.currentMonth = btn.dataset.month;
-    renderToolbar();
-    renderCalendar();
-    renderStats();
+  document.getElementById('prevMonthBtn').addEventListener('click', () => {
+    goToMonth(shiftMonthKey(state.currentMonth, -1));
+  });
+
+  document.getElementById('nextMonthBtn').addEventListener('click', () => {
+    goToMonth(shiftMonthKey(state.currentMonth, 1));
+  });
+
+  document.getElementById('monthPicker').addEventListener('change', e => {
+    goToMonth(e.target.value);
+  });
+
+  document.getElementById('gotoOriginBtn').addEventListener('click', () => {
+    goToMonth(MIN_MONTH_KEY);
+  });
+
+  document.getElementById('gotoTodayBtn').addEventListener('click', () => {
+    goToMonth(todayMonthKey());
   });
 
   document.getElementById('shiftTabs').addEventListener('click', e => {

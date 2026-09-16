@@ -23,9 +23,18 @@
 <div class="validation-bar" id="validationBar"></div>
 
 <div class="toolbar">
-  <div class="toolbar__group">
+  <div class="toolbar__group month-nav-group">
     <span class="toolbar__label">月份</span>
-    <div class="tab-group" id="monthTabs"></div>
+    <div class="month-nav">
+      <button type="button" class="month-nav__btn" id="prevMonthBtn" title="上個月" aria-label="上個月">◀</button>
+      <div class="month-nav__center">
+        <input type="month" id="monthPicker" class="month-nav__input" aria-label="選擇年月">
+        <span class="month-nav__display" id="monthDisplayLabel"></span>
+      </div>
+      <button type="button" class="month-nav__btn" id="nextMonthBtn" title="下個月" aria-label="下個月">▶</button>
+      <button type="button" class="btn btn--ghost" id="gotoOriginBtn">回到起點（115年10月）</button>
+      <button type="button" class="btn btn--ghost" id="gotoTodayBtn">回到今天</button>
+    </div>
   </div>
   <div class="toolbar__group">
     <span class="toolbar__label">班別</span>
