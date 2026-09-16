@@ -312,13 +312,6 @@ function simulateAllTracks() {
   return { dailyMap, turns, skippedCandidates };
 }
 
-function stopReasonText(reason) {
-  if (reason === 'leave') return '遇預假';
-  if (reason === 'conflict') return '同時段其他班別衝突';
-  if (reason === 'fatigue') return '防過勞需先休息';
-  return '';
-}
-
 /* ----------------------------------------------------------------------------
  * 五、全域防呆檢核（每日三班互斥／淑鈴排除／無人連續超過 5 天）
  * --------------------------------------------------------------------------*/
@@ -638,67 +631,7 @@ function renderStats() {
 }
 
 /* ----------------------------------------------------------------------------
- * 十二、渲染：輪值序列推演表（Sequence Timeline）
- * --------------------------------------------------------------------------*/
-
-function renderTimeline() {
-  const container = document.getElementById('timelineTracks');
-  const shifts = activeShiftList();
-
-  container.innerHTML = shifts.map(st => {
-    const data = scheduleData[st];
-    if (!data) return '';
-
-    const cardsHtml = data.turns.map(t => {
-      const reasonClass = t.reason === 'earlyEnd' ? 'timeline-card--handoff'
-        : t.reason === 'inProgress' ? 'timeline-card--inprogress' : 'timeline-card--full5';
-
-      let statusLine = '';
-      if (t.reason === 'full5') {
-        statusLine = `值滿 ${t.days} 天`;
-      } else if (t.reason === 'earlyEnd') {
-        const why = stopReasonText(t.stopReason);
-        statusLine = t.handoffToPerson
-          ? `值 ${t.days} 天（${why}）提早交棒 ➔ 接棒者：${t.handoffToPerson}`
-          : `值 ${t.days} 天（${why}）提早交棒（暫無可接棒人員）`;
-      } else if (t.reason === 'inProgress') {
-        statusLine = `已值 ${t.days} 天（模擬範圍結束，尚未滿 5 天）`;
-      }
-
-      const handoffBadge = t.cameFromHandoff
-        ? `<div class="timeline-card__handoff-in">🔁 接棒自：${t.handoffFromPerson}</div>` : '';
-
-      return `
-        <div class="timeline-card ${reasonClass}">
-          <div class="timeline-card__no">第 ${t.no} 棒</div>
-          <div class="timeline-card__person">${t.person}</div>
-          <div class="timeline-card__range">${t.startDate} ～ ${t.endDate}</div>
-          <div class="timeline-card__status">${statusLine}</div>
-          ${handoffBadge}
-        </div>
-        <div class="timeline-arrow">➔</div>`;
-    }).join('');
-
-    const skippedHtml = data.skippedTurns.length ? `
-      <div class="timeline-skipped">
-        <div class="timeline-skipped__title">⏭️ 順位跳過紀錄（未獲選為當次接棒者）</div>
-        ${data.skippedTurns.map(s => `<div class="timeline-skipped__item">${s.date}：${s.person}（${s.reason}）</div>`).join('')}
-      </div>` : '';
-
-    return `
-      <div class="timeline-track">
-        <div class="timeline-track__title">
-          <span class="shift-badge shift-badge--${st}"><span class="shift-code">${st}</span>${SHIFT_LABELS[st]}</span>
-          輪值序列推演
-        </div>
-        <div class="timeline-cards">${cardsHtml}</div>
-        ${skippedHtml}
-      </div>`;
-  }).join('');
-}
-
-/* ----------------------------------------------------------------------------
- * 十三、統一渲染入口 + 事件綁定
+ * 十二、統一渲染入口 + 事件綁定
  * --------------------------------------------------------------------------*/
 
 function renderAll() {
@@ -707,7 +640,6 @@ function renderAll() {
   renderLeavePanel();
   renderCalendar();
   renderStats();
-  renderTimeline();
 }
 
 // 切換至指定月份（自動限制在模擬可選範圍內），並只重繪與月份相關的區塊
@@ -746,7 +678,6 @@ function attachEventListeners() {
     renderToolbar();
     renderCalendar();
     renderStats();
-    renderTimeline();
   });
 
   document.getElementById('resetBtn').addEventListener('click', resetToDefaults);
@@ -800,7 +731,7 @@ function attachEventListeners() {
 }
 
 /* ----------------------------------------------------------------------------
- * 十四、初始化
+ * 十三、初始化
  * --------------------------------------------------------------------------*/
 
 document.addEventListener('DOMContentLoaded', () => {
