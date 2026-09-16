@@ -19,6 +19,7 @@
 7. 雲端部署至 GitHub 儲存庫與 GitHub Pages：
    - GitHub 專案庫：`https://github.com/a1b228-blip/pharmacy-schedule-prediction`
    - 線上免開機 24h 戰情室：`https://a1b228-blip.github.io/pharmacy-schedule-prediction/`
+8. 依主管指示清空系統內所有預設同仁預假登記：還原為 0 預假之全新純淨排班基底，LocalStorage 儲存鍵升級至 v3，確保初次進入或重置時為完全空白請假清單。
 
 ## 🚦 目前狀態
 - 專案已全面升級至 **L1 + L2 + L3 全層級**。
