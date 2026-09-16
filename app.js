@@ -41,18 +41,12 @@ const MAX_MONTH_KEY = SIM_END_DATE.slice(0, 7);   // '2028-12'
 
 const WEEKDAY_LABELS = ['日', '一', '二', '三', '四', '五', '六'];
 
-// Q4 已知預排假資料（民國 115 年 = 西元 2026 年），供主管直接測試演算法
-const DEFAULT_LEAVE_RECORDS = [
-  { id: 'seed-1', name: '芸妮', start: '2026-10-02', end: '2026-10-14', note: 'Q4 預排假' },
-  { id: 'seed-2', name: '馨霈', start: '2026-10-21', end: '2026-10-30', note: 'Q4 預排假' },
-  { id: 'seed-3', name: '曼如', start: '2026-10-31', end: '2026-11-08', note: 'Q4 預排假' },
-  { id: 'seed-4', name: '博茹', start: '2026-11-09', end: '2026-11-21', note: 'Q4 預排假' },
-  { id: 'seed-5', name: '國棟', start: '2026-11-26', end: '2026-12-08', note: 'Q4 預排假' }
-];
+// 預設預假資料清單（初始清空，由主管依科內即時需求自由登記）
+const DEFAULT_LEAVE_RECORDS = [];
 
-// localStorage 存檔鍵值（僅存於本機瀏覽器，離線亦可保留主管操作紀錄）
-const STORAGE_KEY_LEAVES = 'pharm_night_rotation_v2__leaves';
-const STORAGE_KEY_OFFSETS = 'pharm_night_rotation_v2__offsets';
+// localStorage 存檔鍵值（升級至 v3，確保初次載入為乾淨空白清單）
+const STORAGE_KEY_LEAVES = 'pharm_night_rotation_v3__leaves';
+const STORAGE_KEY_OFFSETS = 'pharm_night_rotation_v3__offsets';
 
 /* ----------------------------------------------------------------------------
  * 二、可變狀態
@@ -406,7 +400,7 @@ function loadFromStorage() {
 }
 
 function resetToDefaults() {
-  const ok = window.confirm('確定要重置為系統預設值嗎？\n將清除所有自訂預假登記與起始人員設定，還原為 Q4 預載測試資料。');
+  const ok = window.confirm('確定要重置為初始狀態嗎？\n將清空所有自訂預假登記並還原三軌預設起跑順序。');
   if (!ok) return;
   leaveRecords = DEFAULT_LEAVE_RECORDS.map(r => ({ ...r }));
   shiftStartIndex = { E: 0, L3: 1, L2: 2 };
