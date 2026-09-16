@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<title>佳里奇美醫院藥劑科 小夜輪值順序預測系統 使用說明書</title>
+<style>
+  @page {
+    size: A4;
+    margin: 15mm 18mm 18mm 18mm;
+    @bottom-center {
+      content: "佳里奇美醫院 藥劑科 ｜ 小夜輪值順序預測系統 使用說明書";
+      font-size: 9pt;
+      color: #888;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif;
+    color: #1a2530;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    font-size: 10pt;
+    background: #ffffff;
+  }
+
+  /* 封面頁首 */
+  .doc-header {
+    border-bottom: 2.5px solid #0b2545;
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .doc-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+  }
+
+  .doc-title-group h1 {
+    margin: 0;
+    font-size: 20pt;
+    color: #0b2545;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .doc-title-group .dept {
+    margin: 2px 0 0;
+    font-size: 11pt;
+    color: #1a4480;
+    font-weight: 700;
+  }
+
+  .doc-meta {
+    text-align: right;
+    font-size: 9pt;
+    color: #556980;
+    line-height: 1.4;
+  }
+
+  .doc-badge {
+    display: inline-block;
+    background: #eef4ff;
+    color: #1a4480;
+    border: 1px solid #c8dbfc;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 8.5pt;
+    margin-top: 4px;
+  }
+
+  /* 核心通關卡片 */
+  .callout-box {
+    background: #f0f5fc;
+    border-left: 4.5px solid #2f6fed;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 18px;
+    margin: 18px 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    page-break-inside: avoid;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    color: #0b2545;
+    font-size: 10.5pt;
+    margin-bottom: 4px;
+  }
+
+  .callout-desc {
+    color: #4a5a70;
+    font-size: 9pt;
+    margin: 0;
+  }
+
+  .pwd-pill {
+    background: #0b2545;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 13pt;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(11, 37, 69, 0.2);
+  }
+
+  /* 章節標題 */
+  h2 {
+    color: #0b2545;
+    font-size: 13pt;
+    font-weight: 800;
+    border-bottom: 1.5px solid #dce4f0;
+    padding-bottom: 6px;
+    margin: 26px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    color: #1a4480;
+    font-size: 10.5pt;
+    font-weight: 700;
+    margin: 16px 0 8px;
+    page-break-after: avoid;
+  }
+
+  p { margin: 0 0 10px; }
+
+  /* 表格 */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 18px;
+    font-size: 9pt;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1px solid #dbe3ee;
+    padding: 8px 10px;
+    text-align: left;
+  }
+
+  th {
+    background: #f4f7fb;
+    color: #0b2545;
+    font-weight: 700;
+  }
+
+  tr:nth-child(even) td {
+    background: #fafcff;
+  }
+
+  .badge-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: 700;
+    color: white;
+  }
+  .tag-e { background: #2f6fed; }
+  .tag-l3 { background: #0f9d8c; }
+  .tag-l2 { background: #8b5cf6; }
+
+  /* 條列說明 */
+  ol, ul {
+    margin: 0 0 12px 20px;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 6px;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+  }
+
+  .feature-card {
+    background: #fbfcfe;
+    border: 1px solid #e1e8f2;
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .feature-card h4 {
+    margin: 0 0 4px;
+    color: #0b2545;
+    font-size: 9.5pt;
+    font-weight: 700;
+  }
+
+  .feature-card p {
+    margin: 0;
+    font-size: 8.5pt;
+    color: #556980;
+  }
+
+  .rule-alert {
+    background: #fff8eb;
+    border: 1px solid #ffe1b3;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #9a5300;
+    font-size: 8.5pt;
+    margin: 8px 0;
+    page-break-inside: avoid;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .doc-footer-print {
+    margin-top: 30px;
+    border-top: 1px solid #e1e8f2;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+    color: #8898aa;
+  }
+</style>
+</head>
+<body>
+
+<!-- 頁首與品牌 -->
+<div class="doc-header">
+  <div class="brand-group">
+    <img src="chimei.png" alt="奇美醫院" class="doc-logo">
+    <div class="doc-title-group">
+      <div class="dept">奇美醫療財團法人 佳里奇美醫院 藥劑科</div>
+      <h1>小夜輪值順序預測系統 操作說明書</h1>
+    </div>
+  </div>
+  <div class="doc-meta">
+    <div>文件版本：V2.0 正式版</div>
+    <div>編制日期：2026 年 9 月</div>
+    <div class="doc-badge">院內管制文件 ｜ 醫療排班專用</div>
+  </div>
+</div>
+
+<!-- 密碼登入醒目盒 -->
+<div class="callout-box">
+  <div>
+    <div class="callout-title">🔒 系統安全身分驗證閘道（Password Gate）</div>
+    <p class="callout-desc">本系統為醫院內部專用排班工具，開啟頁面時已配置密碼保護，請輸入通關密碼解鎖進入。</p>
+  </div>
+  <div class="pwd-pill">cch5500</div>
+</div>
+
+<!-- 第一章 -->
+<h2>一、 系統簡介與核心效益</h2>
+<p>本系統專為佳里奇美醫院藥劑科量身打造，解決傳統人工小夜排班耗時費力、排班法規檢核繁瑣、遇請假交棒銜接不均等臨床痛點。系統採用 100% 離線純前端單頁架構（SPA），所有推演皆在院內電腦本機瀏覽器運算，零外部依賴、秒開即用且完全符合醫療資訊資安規範。</p>
+
+<div class="feature-grid">
+  <div class="feature-card">
+    <h4>⚡ 三軌並行動態交棒</h4>
+    <p>每日 E、L3、L2 三班別同時並行且各需 1 人，同日同人絕對互斥，自動依 13 人名冊推進。</p>
+  </div>
+  <div class="feature-card">
+    <h4>🗓️ 任意未來月份自由穿梭</h4>
+    <p>打破單季限制，支援自由切換至 2028 年底任何月份，全期 822 天無縫連續推演。</p>
+  </div>
+  <div class="feature-card">
+    <h4>🔄 預假登記自動動態重算</h4>
+    <p>同仁預排請假登記後，系統於 1 秒內動態調整班表，遇假當日立即交棒且接棒者排滿 5 天。</p>
+  </div>
+  <div class="feature-card">
+    <h4>🛡️ 剛性醫療法規防呆</h4>
+    <p>自動落實「淑鈴排除夜班」、「小夜連續不超過 5 天（嚴禁連排 6 天）」等防護。</p>
+  </div>
+</div>
+
+<!-- 第二章 -->
+<h2>二、 人員資格與核心排班規則規格</h2>
+
+<h3>1. 班別項目與人力配置</h3>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 15%;">班別代碼</th>
+      <th style="width: 20%;">班別名稱</th>
+      <th style="width: 25%;">每日人力需求</th>
+      <th>輪值週期與交棒機制</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="badge-tag tag-e">E</span></td>
+      <td>E 班（小夜）</td>
+      <td>每日固定 <strong>1 位</strong></td>
+      <td rowspan="3">以<strong>連續 5 天為一輪值週期</strong>（可跨週末）。<br>5 天期滿自動交棒給下一順位；值班中途遇預假（如第 3 天請假），原同仁值勤 2 天中止，預假首日立即由下一可用順位接手並<strong>重新排滿連續 5 天</strong>。</td>
+    </tr>
+    <tr>
+      <td><span class="badge-tag tag-l3">L3</span></td>
+      <td>L3 班（小夜）</td>
+      <td>每日固定 <strong>1 位</strong></td>
+    </tr>
+    <tr>
+      <td><span class="badge-tag tag-l2">L2</span></td>
+      <td>L2 班（小夜）</td>
+      <td>每日固定 <strong>1 位</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>2. 人員名冊與輪值資格（13 ＋ 1 結構）</h3>
+<ul>
+  <li><strong>小夜可輪值名單（共 13 位，依循環順序輪替）</strong>：<br>
+  <code>1. 馨霈</code> ➔ <code>2. 博茹</code> ➔ <code>3. 曼如</code> ➔ <code>4. 斐庭</code> ➔ <code>5. 佳霙</code> ➔ <code>6. 婌伶</code> ➔ <code>7. 國棟</code> ➔ <code>8. 芸妮</code> ➔ <code>9. 薏華</code> ➔ <code>10. 銘豐</code> ➔ <code>11. 玲嬋</code> ➔ <code>12. 景毅</code> ➔ <code>13. 嘉怡</code>。</li>
+  <li><strong>特殊限制同仁</strong>：
+    <strong>淑鈴</strong>（夜班資格為「否」，僅排日間常班）。<span style="color:#d64545; font-weight:700;">系統 100% 強制排除淑鈴進入任何小夜輪值池</span>。
+  </li>
+</ul>
+
+<div class="rule-alert">
+  <strong>🚨 剛性排班防呆鐵律（Hard Constraints）：</strong><br>
+  1. <strong>同日同人絕對互斥</strong>：同一位藥師在同一天絕對不可被指派 2 個或 3 個小夜班別。<br>
+  2. <strong>連續小夜上限 5 天</strong>：小夜班連續天數上限為 5 天，<strong>嚴禁連續排 6 天小夜</strong>（系統滑動視窗強制防護）。<br>
+  3. <strong>預假期間絕對避讓</strong>：同仁登記預假之日期區間，絕對不排定任何小夜。
+</div>
+
+<div class="page-break"></div>
+
+<!-- 第三章 -->
+<h2>三、 系統介面分區與操作指南</h2>
+
+<h3>1. 頂部工具列（月份自由穿梭與系統鎖定）</h3>
+<ul>
+  <li><strong>月份導航按鈕</strong>：點擊 <code>◀</code> 可回到上個月；點擊 <code>▶</code> 可前進至下個月。</li>
+  <li><strong>年月選擇器</strong>：中央顯示當前民國年與月份（如 <code>115年10月 (2026-10)</code>），點擊可直接彈出年月選擇框，快速跳轉至未來任一月份（可選至 117 年 12 月）。</li>
+  <li><strong>快捷按鈕</strong>：
+    <ul>
+      <li><code>回到起點（115年10月）</code>：一秒返回排班推演的歷史基準月。</li>
+      <li><code>回到今天</code>：快速定位至本月當前排班狀態。</li>
+    </ul>
+  </li>
+  <li><strong>班別過濾頁籤</strong>：可點選 <code>全部</code>、<code>E 班</code>、<code>L3 班</code>、<code>L2 班</code> 進行單一班別聚焦檢視。</li>
+  <li><strong>🔒 鎖定系統</strong>：右上角設有一鍵鎖定按鈕，隨手點擊立即喚起高斯模糊密碼防護罩，保護科內排班隱私。</li>
+</ul>
+
+<h3>2. 左側面板：員工預假登記與即時動態更動</h3>
+<ol>
+  <li><strong>登記預假</strong>：
+    <ul>
+      <li>於「同仁姓名」下拉選單中選擇請假同仁（自動列出 13 位藥師）。</li>
+      <li>選擇「預假開始日期」與「預假結束日期」（可跨任意未來月份）。</li>
+      <li>填寫「事由備註」（選填，如特休、婚假、出國等）。</li>
+      <li>點擊 <strong>「＋ 新增預假」</strong>。</li>
+    </ul>
+  </li>
+  <li><strong>自動動態更動</strong>：
+    系統於 <strong>1 秒內自動完成全期 27 個月排班重新推演</strong>：
+    <ul>
+      <li>原值勤同仁在請假期間之班別立即自動撤銷。</li>
+      <li>請假當日由輪值池中下一位可用順位接棒，接棒者自該日起算<strong>排滿連續 5 天</strong>。</li>
+      <li>右側月曆即時更新，並於當日標註 <code>🔁 接棒</code> 與請假同仁的 <code>🏖️ 預假</code> 標籤。</li>
+    </ul>
+  </li>
+  <li><strong>刪除預假</strong>：於「已登記預假清單」中點擊該筆假單右側的 <code>✕</code>，系統立即恢復原始輪值順序。</li>
+</ol>
+
+<h3>3. 右側主畫面：排班預測月曆與統計</h3>
+<ul>
+  <li><strong>每日三軌資訊</strong>：
+    每日方格清晰陳列三行：
+    <span class="badge-tag tag-e">E</span> 責任藥師、
+    <span class="badge-tag tag-l3">L3</span> 責任藥師、
+    <span class="badge-tag tag-l2">L2</span> 責任藥師。
+  </li>
+  <li><strong>交棒日高亮</strong>：若因同仁請假而提早交接，格內顯示 <code>🔁 接棒(原:姓名)</code>，交接軌跡透明可考。</li>
+  <li><strong>當日預假反灰</strong>：請假同仁以灰底 <code>🏖️ 姓名 預假</code> 呈現，一眼掌握當日休假人員。</li>
+  <li><strong>本月輪值統計</strong>：左下方直條圖統計當月各同仁值班天數與棒次，協助主管掌握工作量平衡。</li>
+</ul>
+
+<!-- 第四章 -->
+<h2>四、 臨床常見排班情境 Q&A</h2>
+
+<h3>Q1：某員工原本輪值 5 天，值到第 3 天才請假，系統如何處理？</h3>
+<p><strong>解答</strong>：原員工正常出勤第 1、2 天；第 3 天起由下一順位可用同仁出任，且該接棒者自第 3 天起算<strong>同樣排滿連續 5 天</strong>（例如第 3 天至第 7 天）。接棒當日若有其他同仁已在別軌執勤，系統會自動跳過該員、挑選無衝突之下一順位，確保同日不重複。</p>
+
+<h3>Q2：5 天輪值週期橫跨月底與月初時，班表會斷掉嗎？</h3>
+<p><strong>解答</strong>：絕對不會。系統採用「單一連續時間軸推演引擎」，跨月時（例如 10/30～11/03 共 5 天），切換至 11 月時，11/01 與 11/02 會清楚接續顯示該同仁的後半段值勤，棒次完整保留。</p>
+
+<h3>Q3：關閉瀏覽器或換電腦時，登記的預假資料會遺失嗎？</h3>
+<p><strong>解答</strong>：不會。系統已內建 HTML5 LocalStorage 本機自動存檔，主管登錄的每一筆預假與設定皆安全保存在該電腦瀏覽器中，下次開啟時自動載入。</p>
+
+<div class="doc-footer-print">
+  <div>系統檔案：index.html ｜ 佳里奇美醫院 藥劑科資訊推動小組</div>
+  <div>通關密碼：cch5500 ｜ 內部專用，請妥善保管</div>
+</div>
+
+</body>
+</html>

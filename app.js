@@ -731,10 +731,110 @@ function attachEventListeners() {
 }
 
 /* ----------------------------------------------------------------------------
- * 十三、初始化
+ * 十三、系統安全身分驗證閘道（Password Gate: cch5500）
+ * --------------------------------------------------------------------------*/
+
+const GATE_PASSWORD = 'cch5500';
+const GATE_SESSION_KEY = 'cchNightGateUnlocked';
+
+function isGateUnlocked() {
+  try {
+    return sessionStorage.getItem(GATE_SESSION_KEY) === '1';
+  } catch (e) {
+    return false;
+  }
+}
+
+function unlockGate() {
+  try {
+    sessionStorage.setItem(GATE_SESSION_KEY, '1');
+  } catch (e) {}
+  document.body.classList.remove('locked');
+  const overlay = document.getElementById('gate-overlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+
+function lockGate() {
+  try {
+    sessionStorage.removeItem(GATE_SESSION_KEY);
+  } catch (e) {}
+  document.body.classList.add('locked');
+  const overlay = document.getElementById('gate-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+  const input = document.getElementById('gatePasswordInput');
+  if (input) {
+    input.value = '';
+    input.type = 'password';
+    setTimeout(() => input.focus(), 300);
+  }
+  const toggleBtn = document.getElementById('gateToggleVisibility');
+  if (toggleBtn) toggleBtn.textContent = '👁️';
+  const errorEl = document.getElementById('gateError');
+  if (errorEl) errorEl.classList.remove('show');
+}
+
+function initGate() {
+  const overlay = document.getElementById('gate-overlay');
+  const input = document.getElementById('gatePasswordInput');
+  const inputWrap = document.getElementById('gateInputWrap');
+  const submitBtn = document.getElementById('gateSubmitBtn');
+  const toggleBtn = document.getElementById('gateToggleVisibility');
+  const errorEl = document.getElementById('gateError');
+  const lockBtn = document.getElementById('lockBtn');
+
+  function attemptUnlock() {
+    if (!input) return;
+    const val = input.value.trim();
+    if (val === GATE_PASSWORD) {
+      if (errorEl) errorEl.classList.remove('show');
+      unlockGate();
+    } else {
+      if (errorEl) {
+        errorEl.textContent = '通關密碼錯誤，請重新輸入（提示：cch5500）';
+        errorEl.classList.add('show');
+      }
+      if (inputWrap) {
+        inputWrap.classList.remove('shake');
+        void inputWrap.offsetWidth; // 強制重繪以重播震動動畫
+        inputWrap.classList.add('shake');
+      }
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  if (submitBtn) submitBtn.addEventListener('click', attemptUnlock);
+  if (input) {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') attemptUnlock();
+    });
+  }
+  if (toggleBtn && input) {
+    toggleBtn.addEventListener('click', () => {
+      const isPwd = input.type === 'password';
+      input.type = isPwd ? 'text' : 'password';
+      toggleBtn.textContent = isPwd ? '🙈' : '👁️';
+      input.focus();
+    });
+  }
+  if (lockBtn) lockBtn.addEventListener('click', lockGate);
+
+  if (isGateUnlocked()) {
+    document.body.classList.remove('locked');
+    if (overlay) overlay.classList.add('hidden');
+  } else {
+    document.body.classList.add('locked');
+    if (overlay) overlay.classList.remove('hidden');
+    if (input) setTimeout(() => input.focus(), 300);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * 十四、初始化
  * --------------------------------------------------------------------------*/
 
 document.addEventListener('DOMContentLoaded', () => {
+  initGate();
   loadFromStorage();
   recomputeSchedule();
   attachEventListeners();

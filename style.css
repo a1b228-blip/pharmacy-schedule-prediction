@@ -48,12 +48,203 @@ html, body {
 
 h1, h2, h3 { margin: 0; }
 
+/* ---------------------------------------------------------------------- 密碼安全驗證閘道（Password Gate） */
+
+body.locked {
+  overflow: hidden;
+}
+
+body.locked .app-header,
+body.locked .validation-bar,
+body.locked .toolbar,
+body.locked .app-layout,
+body.locked .app-footer {
+  filter: blur(14px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.gate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(11, 37, 69, 0.85);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.gate-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.gate-card {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 440px;
+  width: 100%;
+  padding: 36px 32px 28px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  text-align: center;
+  animation: gateCardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes gateCardPop {
+  0% { opacity: 0; transform: scale(0.92) translateY(12px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.gate-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.gate-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.gate-brand-text {
+  text-align: left;
+}
+
+.gate-dept {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy-700);
+  letter-spacing: 0.5px;
+}
+
+.gate-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-top: 2px;
+}
+
+.gate-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gate-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.gate-input-wrap input {
+  width: 100%;
+  padding: 13px 44px 13px 16px;
+  border: 1.5px solid var(--border-soft);
+  border-radius: 8px;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: var(--text-main);
+  background: #fbfcfe;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.gate-input-wrap input:focus {
+  outline: none;
+  border-color: var(--navy-600);
+  box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.18);
+  background: #ffffff;
+}
+
+.gate-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  transition: opacity 0.2s;
+}
+
+.gate-toggle-btn:hover {
+  opacity: 0.7;
+}
+
+.gate-error {
+  font-size: 12.5px;
+  color: var(--color-danger);
+  min-height: 18px;
+  display: none;
+  font-weight: 600;
+}
+
+.gate-error.show {
+  display: block;
+}
+
+.gate-submit-btn {
+  background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+  color: #ffffff;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(11, 37, 69, 0.25);
+}
+
+.gate-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(11, 37, 69, 0.32);
+}
+
+.gate-submit-btn:active {
+  transform: translateY(0);
+}
+
+.gate-footer {
+  margin-top: 22px;
+  font-size: 11.5px;
+  color: #98a2b3;
+  border-top: 1px solid #f0f2f5;
+  padding-top: 14px;
+}
+
+.shake {
+  animation: inputShake 0.4s ease;
+}
+
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
 /* ---------------------------------------------------------------------- 頁首 */
 
 .app-header {
   background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
   color: var(--text-inverse);
-  padding: 20px 28px;
+  padding: 18px 28px;
 }
 
 .app-header__inner {
@@ -66,8 +257,30 @@ h1, h2, h3 { margin: 0; }
   gap: 12px;
 }
 
+.app-header__title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-header__logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 4px;
+}
+
 .app-header__title { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
 .app-header__subtitle { margin-top: 4px; font-size: 13px; color: #c9d6ec; }
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
 .app-header__badge {
   background: rgba(255, 255, 255, 0.12);
@@ -76,6 +289,23 @@ h1, h2, h3 { margin: 0; }
   border-radius: var(--radius-sm);
   font-size: 12.5px;
   white-space: nowrap;
+}
+
+.btn--lock {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn--lock:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* ---------------------------------------------------------------------- 防呆檢核綠燈 */

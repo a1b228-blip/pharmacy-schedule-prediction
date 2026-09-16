@@ -8,14 +8,42 @@
 </head>
 <body>
 
+<div id="gate-overlay" class="gate-overlay">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <img src="chimei.png" alt="奇美醫院院徽" class="gate-logo">
+      <div class="gate-brand-text">
+        <div class="gate-dept">佳里奇美醫院 藥劑科</div>
+        <h2 class="gate-title">小夜輪值順序預測系統</h2>
+      </div>
+    </div>
+    <p class="gate-desc">受密碼防護之內部醫療排班系統，請輸入通關密碼以解鎖進入。</p>
+    <div class="gate-form">
+      <div class="gate-input-wrap" id="gateInputWrap">
+        <input type="password" id="gatePasswordInput" placeholder="請輸入通關密碼（預設：cch5500）" autocomplete="current-password">
+        <button type="button" id="gateToggleVisibility" class="gate-toggle-btn" title="切換顯示密碼">👁️</button>
+      </div>
+      <div id="gateError" class="gate-error"></div>
+      <button type="button" id="gateSubmitBtn" class="gate-submit-btn">解鎖系統</button>
+    </div>
+    <div class="gate-footer">佳里奇美醫院 藥劑科資訊管理 ｜ 預設密碼：cch5500</div>
+  </div>
+</div>
+
 <header class="app-header">
   <div class="app-header__inner">
     <div class="app-header__title-group">
-      <h1 class="app-header__title">藥劑科小夜輪值順序預測系統</h1>
-      <p class="app-header__subtitle">佳里奇美醫院｜小夜班（E / L3 / L2）動態交棒排班預測</p>
+      <img src="chimei.png" alt="奇美醫院院徽" class="app-header__logo">
+      <div>
+        <h1 class="app-header__title">藥劑科小夜輪值順序預測系統</h1>
+        <p class="app-header__subtitle">佳里奇美醫院｜小夜班（E / L3 / L2）動態交棒排班預測</p>
+      </div>
     </div>
-    <div class="app-header__badge" title="淑鈴夜班資格為「否」，100% 不進入小夜輪值池，僅排日班">
-      ⚠️ 淑鈴不參與小夜輪值（僅排日班）
+    <div class="app-header__actions">
+      <div class="app-header__badge" title="淑鈴夜班資格為「否」，100% 不進入小夜輪值池，僅排日班">
+        ⚠️ 淑鈴不參與小夜輪值（僅排日班）
+      </div>
+      <button type="button" class="btn btn--lock" id="lockBtn" title="鎖定系統">🔒 鎖定系統</button>
     </div>
   </div>
 </header>
