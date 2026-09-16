@@ -21,17 +21,20 @@
 ├── AGENTS.md        # 專案通用藍圖
 ├── handoff.md       # 跨 Session / 跨 Agent 交接檔
 ├── .gitignore       # Git 忽略檔案設定
-├── index.html       # 系統主介面（預假面板、月曆總表、輪值推演表）
+├── index.html       # 系統主介面（密碼閘道 cch5500、預假面板、月曆總表）
 ├── style.css        # 深藍/淺灰醫療科技感樣式表
-└── app.js           # 三軌動態交棒排班演算法、防呆引擎與 DOM 渲染
+├── app.js           # 三軌動態交棒排班演算法、防呆引擎與 DOM 渲染
+├── chimei.png       # 奇美醫院官方院徽
+├── 使用說明書.html   # 長官專用操作手冊 HTML 排版檔
+└── 佳里奇美醫院藥劑科_小夜輪值順序預測系統_使用說明書.pdf # 長官專用高解析全彩操作說明書
 ```
 
-## 同步層級（本專案初始化至 L1 + L3 層級）
+## 同步層級（本專案已升級至 L1 + L2 + L3 全層級）
 
 | 層級 | 平台 | 位置 | 讀取時機 |
 |------|------|------|---------|
 | L1 | 本地 | `AGENTS.md`＋`handoff.md` | 每個 session |
-| L2 | GitHub | 未啟用（本機未安裝 GitHub CLI） | 指定時 |
+| L2 | GitHub | [a1b228-blip/pharmacy-schedule-prediction](https://github.com/a1b228-blip/pharmacy-schedule-prediction)（Pages: [線上戰情室](https://a1b228-blip.github.io/pharmacy-schedule-prediction/)） | 指定時 |
 | L3 | Obsidian | `藥劑科排班預測系統/專案工作流程.md` | 有需要時 |
 
 ## 工作約定
